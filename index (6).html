@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <title>Golden Agro Fund</title>
+  <meta name="description" content="Cultivating the Future with Sustainability and Innovation. Irrigated agriculture and carbon crediting." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Questrial&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet" />
+  <script>
+    // Suppress Tailwind CDN production warning
+    const originalWarn = console.warn;
+    console.warn = function(...args) {
+      if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com')) return;
+      originalWarn.apply(console, args);
+    };
+  </script>
+  <script src="https://cdn.tailwindcss.com/3.4.1"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['DM Sans', 'system-ui', 'sans-serif'],
+            heading: ['Questrial', 'system-ui', 'sans-serif'],
+            serif: ['Fraunces', 'Georgia', 'serif'],
+            button: ['Space Grotesk', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            teal: {
+              900: '#0D3B3B',
+              800: '#0A2F2F',
+              700: '#123D3D',
+            },
+            gold: '#C4A35A',
+            'gold-hover': '#B8963E',
+            cream: '#F5F0E8',
+            'cream-dark': '#E8EDE8',
+            mint: '#2DD4A8',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #F5F0E8; }
+    ::-webkit-scrollbar-thumb { background: #0D3B3B; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #0A2F2F; }
+    .fade-in { opacity: 0; transform: translateY(30px); transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    @keyframes bounce { 0%, 100% { transform: translateY(-25%); } 50% { transform: translateY(0); } }
+    .animate-bounce { animation: bounce 1s infinite; }
+  </style>
+</head>
+<body class="font-sans bg-cream text-teal-900">
+  <div id="app"></div>
+
+  <script type="module">
+    import React, { useState, useEffect, useRef, useCallback, createContext, useContext } from 'https://esm.sh/react@18';
+    import { createRoot } from 'https://esm.sh/react-dom@18/client';
+
+    // ═══ DATA ═══
+    const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663210798515/oHzLAErjVSWEPdhuXJsE44/logo-golden-agro-white-nobg_fbf2aaa8.png";
+    const LOGO_DARK_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663210798515/oHzLAErjVSWEPdhuXJsE44/logo-golden-agro-dark-nobg_29c329f2.png";
+    const HERO_BG = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663210798515/gdoSalWSKUsclNhY.png";
+    const HERO_BG_MOBILE = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663210798515/SZXmgaOMSJLQMFmr.png";
+    const FARM_IMG = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663210798515/TAOHOVbDFTPryUBs.jpg";
+    const FARM_SF_IMG = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663210798515/pFoZRUpeicxxiZBQ.jpg";
+    const GREEN_REV_IMG = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663210798515/gnWGoyFafTuOnsvB.jpg";
+    const MISSION_IMG = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663210798515/tRTafzDCgIMuHbDh.jpg";
+    const EARTH_IMG = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663210798515/ZfvMDsKsjsyWxzMb.jpg";
+    const TEAM_FIELD_IMG = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663210798515/dmaiOKFNHBifZHxv.jpg";
+    const SOIL_WORK_IMG = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663210798515/rQmzxQGwGwXzIDzj.jpg";
+    const BERRYS_IMAGES = [
+      "https://files.manuscdn.com/user_upload_by_module/session_file/310519663210798515/FJoNAHUMVEdRdOxI.jpg",
+      "https://files.manuscdn.com/user_upload_by_module/session_file/310519663210798515/kYHedUpFULwKOtjQ.jpg",
+      "https://files.manuscdn.com/user_upload_by_module/session_file/310519663210798515/JuJiukvGMurLBCKA.jpg",
+      "https://files.manuscdn.com/user_upload_by_module/session_file/310519663210798515/fsjPwyqzSsJPFRGO.jpg"
+    ];
+    const VIDEO_URL = "https://video.wixstatic.com/video/1e54a2_40340b2130714d159d5b5f24590e79e4/1080p/mp4/file.mp4";
+
+    const TEAM_MEMBERS = [
+      "Ricardo Larraín", "Julio Camargo Majfud", "Cristina Montilla", "Sebastian Correa",
+      "Jimena Mercadal", "Sofia Camargo", "Juliana Rolla", "Phillipe Cordeiro",
+      "Nara Ferrari", "Francisco da Silva", "Fabiano Rosa", "Braulio Alves",
+      "Luiz F. Bassani", "Alexandre Barrence", "Marcelo Montilla", "Kaio Miguel da Silva",
+      "Cristina Paes Landim", "Marcos de Lima Caetano", "Luiza Ferrari",
+      "Nelson Antunes", "Fábio Schnorr"
+    ];
+
+    const PARTNER_LOGOS = [
+      "https://goldeninvst-ehzdvinb.manus.space/images/partners_white/logo-1.png",
+      "https://goldeninvst-ehzdvinb.manus.space/images/partners_white/logo-3.png",
+      "https://goldeninvst-ehzdvinb.manus.space/images/partners_white/logo-5.png",
+      "https://goldeninvst-ehzdvinb.manus.space/images/partners_white/logo-7.png",
+      "https://goldeninvst-ehzdvinb.manus.space/images/partners_white/logo-9.png",
+      "https://goldeninvst-ehzdvinb.manus.space/images/partners_white/logo-11.png",
+      "https://goldeninvst-ehzdvinb.manus.space/images/partners_white/logo-13.png",
+      "https://goldeninvst-ehzdvinb.manus.space/images/partners_white/logo-15.png",
+      "https://goldeninvst-ehzdvinb.manus.space/images/partners_white/logo-17.png",
+      "https://goldeninvst-ehzdvinb.manus.space/images/partners_white/logo-19.png",
+      "https://goldeninvst-ehzdvinb.manus.space/images/partners_white/logo-21.png",
+      "https://goldeninvst-ehzdvinb.manus.space/images/partners_white/logo-23.png",
+      "https://goldeninvst-ehzdvinb.manus.space/images/partners_white/logo-25.png",
+      "https://goldeninvst-ehzdvinb.manus.space/images/partners_white/logo-29.png",
+      "https://goldeninvst-ehzdvinb.manus.space/images/partners_white/logo-30.png",
+      "https://goldeninvst-ehzdvinb.manus.space/images/partners_white/logo-32.png",
+      "https://goldeninvst-ehzdvinb.manus.space/images/partners_white/logo-36.png",
+      "https://goldeninvst-ehzdvinb.manus.space/images/partners_white/logo-40.png",
+      "https://goldeninvst-ehzdvinb.manus.space/images/partners_white/logo-44.png",
+      "https://goldeninvst-ehzdvinb.manus.space/images/partners_white/logo-45.png",
+      "https://goldeninvst-ehzdvinb.manus.space/images/partners_white/logo-46.png",
+      "https://goldeninvst-ehzdvinb.manus.space/images/partners_white/logo-47.png",
+      "https://goldeninvst-ehzdvinb.manus.space/images/partners_white/logo-48.png",
+      "https://goldeninvst-ehzdvinb.manus.space/images/partners_white/logo-49.png",
+      "https://goldeninvst-ehzdvinb.manus.space/images/partners_white/logo-50.png",
+      "https://goldeninvst-ehzdvinb.manus.space/images/partners_white/logo-52.png"
+    ];
+
+    const PROJECT_STATS = [
+      { number: 3686138, label: "tCO2 in 20 years", format: (n) => n.toLocaleString("en-US") },
+      { number: 10000, label: "ha of agricultural area", format: () => "10 thousand ha" },
+      { number: 20000, label: "lots in urban areas", format: () => "20 thousand lots" },
+      { number: 128000, label: "Jobs", format: () => "+128 thousand" }
+    ];
+
+    const ADDRESSES = [
+      "Passage Avenue - Pilão Arcado, BA, 47240-000",
+      "Ernesto Urbani Street, No. 07 – room 02 – Centro neighborhood – Canela/RS, ZIP code: 95.680-000",
+      "Twenty-Fourth of October Street, 111 Room 1108, Moinhos de Vento Neighborhood in Porto Alegre/RS Zip Code 90.430-055",
+      "Joaquim Nabuco Street, room 1611, Dom Campelo Trade Center Building, Downtown, Petrolina/PE, 56304-040"
+    ];
+
+    const FARMS = [
+      "Arcade Mortar Jatobá I Farm, Bahia Brazil",
+      "San Francisco Farm I, II, III Saldanha, Pilão Arcado, Bahia Brazil"
+    ];
+
+    const CNPJS = ["CNPJ 33.504.653/0001-67", "CNPJ 10.490.501/0001-57", "CNPJ 45.565.990/0001-43"];
+
+    // ═══ TRANSLATIONS ═══
+    const translations = {
+      en: {
+        "nav.farms": "Our Farms", "nav.project": "Our Project", "nav.partners": "Partners",
+        "nav.team": "Our Team", "nav.about": "About", "nav.contact": "Contact",
+        "hero.tag": "Irrigated agriculture and carbon crediting", "hero.title": "Our Future is Blue", "hero.cta": "Learn more",
+        "farms.title": "Our Farms",
+        "farms.jatoba": "Jatobá Farm, located in Pilão Arcado - BA,",
+        "farms.jatoba.text": "is an example of innovation and sustainable development in agribusiness. With a production model based on efficiency and respect for the environment, the farm integrates technology and ecological practices to ensure maximum productivity with the lowest environmental impact. In addition, the farm is strategically located to facilitate the flow and distribution of production, becoming a reference agricultural hub.",
+        "farms.saofrancisco": "Fazenda São Francisco, located in the region of Saldanha - BA,",
+        "farms.saofrancisco.text": "a remarkable natural beauty nestled in the heart of the São Francisco Valley in Brazil. Recognized for its fertile soil, abundant water resources and favorable climate, Saldanha São Francisco has emerged as a privileged destination for agricultural investments.",
+        "farms.location": "region along the São Francisco River",
+        "farms.location.text": "provides access to abundant water for irrigation, making it an ideal environment for a variety of crops. Additionally, both the",
+        "farms.location.text2": "farms boast a rich cultural heritage and vibrant local communities, offering investors not only promising agricultural opportunities but also a unique cultural experience. With their combination of natural resources, favorable climate and cultural richness, the farms present an attractive investment opportunity for those seeking to participate in Brazil's thriving agricultural sector.",
+        "project.title": "Our Project", "project.subtitle": "Measuring our project in numbers",
+        "project.video.cta": "Check out the 1st stage of Fazenda Jatobá",
+        "project.stat1.label": "tCO2 in 20 years", "project.stat1.desc": "Carbon credit is a unit of measurement that represents the reduction of greenhouse gas (GHG) emissions through projects or activities that seek to reduce the carbon footprint.",
+        "project.stat2.label": "ha of agricultural area", "project.stat2.desc": "65 thousand ha of environmental preservation area, recovery and carbon crediting of the Caatinga Biome",
+        "project.stat3.label": "lots in urban areas", "project.stat3.desc": "20 thousand 350 meter lots in urban areas",
+        "project.stat4.label": "Jobs", "project.stat4.desc": "+41,000 direct jobs\n+87,000 indirect jobs",
+        "invest.title": "What we look for when investing", "invest.water": "Accessibility to water", "invest.soil": "Soil quality", "invest.market": "Proximity and access to relevant markets",
+        "partners.title": "Partners", "partners.cta": "Become a Partner",
+        "team.title": "Our team", "team.cta": "Come to the team",
+        "green.title.1": "The", "green.title.2": "Green", "green.title.3": "Revolution in Agriculture",
+        "green.p1": "Welcome to Golden Agro Fund, a leader in sustainable innovation for agribusiness. We are at the forefront of industry transformation by combining cutting-edge technology with environmentally conscious agricultural practices.",
+        "green.p2": "Golden Agro Fund is a group of private investors formed in 2021 with vast and proven experience in the agricultural and real estate sector.",
+        "green.p3": "Golden Agro Fund is a leading company in the management and development of agricultural projects, promoting the modernization of agribusiness with sustainability and high productivity. Our mission is to connect investors and producers to opportunities that drive growth in the sector. Fazenda Jatobá is one of our most promising projects, located in a strategic region for agribusiness. With state-of-the-art infrastructure, the farm stands out for its efficient use of natural resources and its commitment to sustainable production.",
+        "green.smart.title": "Smartcity AgroIndustrial", "green.smart.text": "Smartcity will industrialize Golden Agro's value chains in biotechnology, biofertilizers, biogas, renewable energy, among other areas, within a Smart City with sustainable housing.",
+        "green.dores.title": "Dores do Mercado", "green.dores.text": "Concentrated Incentives for Large Producers. Inaccessible Sustainable Technologies and Innovations. Difficult Maintenance and Unintuitive Systems.",
+        "green.publico.title": "Público Alvo", "green.publico.text": "Small and Medium Rural Producers. More Conscious End Consumers.",
+        "climate.title": "Climate", "climate.text": "The municipality of Pilão Arcado, Bahia, is located in the semiarid region of Brazil, and has low vegetation, adapted to dry periods, in addition to having ample biodiversity. Like all semiarid regions of the planet, precipitation is very irregular in time and space, with November to April being the main rainy season in the semiarid region of northeastern Brazil, especially in the São Francisco Valley.",
+        "soil.title": "Soil", "soil.text": "The soil has sandy characteristics, which is suitable for early crops as it is easy to work, even in humid conditions. It has good drainage and a low-density texture, tends to dry out very quickly and retains moisture for a short period of time, so it requires constant irrigation.",
+        "mission.title": "Mission", "mission.text": "Our mission is to pave the way for sustainable innovation in agribusiness, promoting a green revolution that transcends borders. We are committed to leading the industry in adopting agricultural practices that respect and protect our planet by promoting sustainability, providing innovative technological solutions that boost productivity and respect the environment.",
+        "vision.title": "Vision", "vision.text": "Our vision is to be recognized as a leader in the farmland investment market, known for the excellence of our services, integrity of our practices, and commitment to sustainability and social responsibility. We strive to be the preferred choice for conscious investors seeking solid financial returns and a positive impact on the world.",
+        "values.title": "Values", "values.text": "We believe in integrity, cultivating transparent and trustworthy relationships with our customers, partners and communities. We value sustainability, from soil preservation to reducing carbon emissions, and are committed to promoting agricultural practices that respect and protect the environment.",
+        "contact.title": "Talk to us", "contact.subtitle": "Stay up to date with our news and information.",
+        "contact.newsletter": "Yes, sign me up for your newsletter.", "contact.subscribe": "Subscribe",
+        "contact.success": "Thank you! Your submission has been received.", "contact.error": "Something went wrong. Please try again.", "contact.sending": "Sending...",
+        "gallery.title": "Golden Berrys", "gallery.subtitle": "Premium blueberries grown with care in the heart of Bahia",
+        "services.title": "Our Services", "services.subtitle": "Innovative solutions for sustainable agriculture",
+        "services.1": "Implementation of New Technologies", "services.2": "Consulting in Governance in Agriculture",
+        "services.3": "Social and Environmental Responsibility", "services.4": "Sustainable Agricultural Practices",
+        "services.5": "Natural Capital Recovery", "services.6": "High Quality of Life",
+        "services.7": "Circular and Collaborative Economy", "services.8": "Blueberry Production", "services.9": "Complete Infrastructure",
+        "map.title": "Our Locations", "map.subtitle": "Strategic farms in the heart of the São Francisco Valley",
+      },
+      es: {
+        "nav.farms": "Nuestras Fincas", "nav.project": "Nuestro Proyecto", "nav.partners": "Socios",
+        "nav.team": "Nuestro Equipo", "nav.about": "Acerca de", "nav.contact": "Contacto",
+        "hero.tag": "Agricultura irrigada y créditos de carbono", "hero.title": "Nuestro Futuro es Azul", "hero.cta": "Más información",
+        "farms.title": "Nuestras Fincas",
+        "farms.jatoba": "Finca Jatobá, ubicada en Pilão Arcado - BA,",
+        "farms.jatoba.text": "es un ejemplo de innovación y desarrollo sostenible en el agronegocio. Con un modelo de producción basado en la eficiencia y el respeto al medio ambiente, la finca integra tecnología y prácticas ecológicas para garantizar la máxima productividad con el menor impacto ambiental. Además, la finca está estratégicamente ubicada para facilitar el flujo y distribución de la producción, convirtiéndose en un polo agrícola de referencia.",
+        "farms.saofrancisco": "Fazenda São Francisco, ubicada en la región de Saldanha - BA,",
+        "farms.saofrancisco.text": "una notable belleza natural enclavada en el corazón del Valle de São Francisco en Brasil. Reconocida por su suelo fértil, abundantes recursos hídricos y clima favorable, Saldanha São Francisco se ha convertido en un destino privilegiado para inversiones agrícolas.",
+        "farms.location": "región a lo largo del Río São Francisco",
+        "farms.location.text": "proporciona acceso a agua abundante para riego, lo que la convierte en un entorno ideal para una variedad de cultivos. Además, tanto las fincas",
+        "farms.location.text2": "cuentan con un rico patrimonio cultural y comunidades locales vibrantes, ofreciendo a los inversores no solo oportunidades agrícolas prometedoras sino también una experiencia cultural única. Con su combinación de recursos naturales, clima favorable y riqueza cultural, las fincas presentan una atractiva oportunidad de inversión para quienes buscan participar en el próspero sector agrícola de Brasil.",
+        "project.title": "Nuestro Proyecto", "project.subtitle": "Midiendo nuestro proyecto en números",
+        "project.video.cta": "Conozca la 1ª etapa de la Fazenda Jatobá",
+        "project.stat1.label": "tCO2 en 20 años", "project.stat1.desc": "El crédito de carbono es una unidad de medida que representa la reducción de emisiones de gases de efecto invernadero (GEI) a través de proyectos o actividades que buscan reducir la huella de carbono.",
+        "project.stat2.label": "ha de área agrícola", "project.stat2.desc": "65 mil ha de área de preservación ambiental, recuperación y crédito de carbono del Bioma Caatinga",
+        "project.stat3.label": "lotes en áreas urbanas", "project.stat3.desc": "20 mil lotes de 350 metros en áreas urbanas",
+        "project.stat4.label": "Empleos", "project.stat4.desc": "+41.000 empleos directos\n+87.000 empleos indirectos",
+        "invest.title": "Lo que buscamos al invertir", "invest.water": "Accesibilidad al agua", "invest.soil": "Calidad del suelo", "invest.market": "Proximidad y acceso a mercados relevantes",
+        "partners.title": "Socios", "partners.cta": "Conviértase en Socio",
+        "team.title": "Nuestro equipo", "team.cta": "Únase al equipo",
+        "green.title.1": "La", "green.title.2": "Verde", "green.title.3": "Revolución en la Agricultura",
+        "green.p1": "Bienvenido a Golden Agro Fund, líder en innovación sostenible para el agronegocio. Estamos a la vanguardia de la transformación de la industria combinando tecnología de punta con prácticas agrícolas ambientalmente conscientes.",
+        "green.p2": "Golden Agro Fund es un grupo de inversores privados formado en 2021 con amplia y comprobada experiencia en el sector agrícola e inmobiliario.",
+        "green.p3": "Golden Agro Fund es una empresa líder en la gestión y desarrollo de proyectos agrícolas, promoviendo la modernización del agronegocio con sostenibilidad y alta productividad. Nuestra misión es conectar inversores y productores con oportunidades que impulsen el crecimiento del sector. Fazenda Jatobá es uno de nuestros proyectos más prometedores, ubicado en una región estratégica para el agronegocio. Con infraestructura de última generación, la finca se destaca por su uso eficiente de los recursos naturales y su compromiso con la producción sostenible.",
+        "green.smart.title": "Smartcity AgroIndustrial", "green.smart.text": "Smartcity industrializará las cadenas de valor de Golden Agro en biotecnología, biofertilizantes, biogás, energía renovable, entre otras áreas, dentro de una Ciudad Inteligente con viviendas sostenibles.",
+        "green.dores.title": "Dolores del Mercado", "green.dores.text": "Incentivos Concentrados para Grandes Productores. Tecnologías e Innovaciones Sostenibles Inaccesibles. Mantenimiento Difícil y Sistemas No Intuitivos.",
+        "green.publico.title": "Público Objetivo", "green.publico.text": "Pequeños y Medianos Productores Rurales. Consumidores Finales Más Conscientes.",
+        "climate.title": "Clima", "climate.text": "El municipio de Pilão Arcado, Bahía, se encuentra en la región semiárida de Brasil, y tiene vegetación baja, adaptada a períodos secos, además de tener amplia biodiversidad. Como todas las regiones semiáridas del planeta, la precipitación es muy irregular en tiempo y espacio, siendo de noviembre a abril la principal temporada de lluvias en la región semiárida del noreste de Brasil, especialmente en el Valle de São Francisco.",
+        "soil.title": "Suelo", "soil.text": "El suelo tiene características arenosas, lo que es adecuado para cultivos tempranos ya que es fácil de trabajar, incluso en condiciones húmedas. Tiene buen drenaje y una textura de baja densidad, tiende a secarse muy rápidamente y retiene la humedad por un corto período de tiempo, por lo que requiere riego constante.",
+        "mission.title": "Misión", "mission.text": "Nuestra misión es allanar el camino para la innovación sostenible en el agronegocio, promoviendo una revolución verde que trascienda fronteras. Estamos comprometidos a liderar la industria en la adopción de prácticas agrícolas que respeten y protejan nuestro planeta promoviendo la sostenibilidad, proporcionando soluciones tecnológicas innovadoras que impulsen la productividad y respeten el medio ambiente.",
+        "vision.title": "Visión", "vision.text": "Nuestra visión es ser reconocidos como líderes en el mercado de inversión en tierras agrícolas, conocidos por la excelencia de nuestros servicios, la integridad de nuestras prácticas y el compromiso con la sostenibilidad y la responsabilidad social. Nos esforzamos por ser la opción preferida para inversores conscientes que buscan retornos financieros sólidos y un impacto positivo en el mundo.",
+        "values.title": "Valores", "values.text": "Creemos en la integridad, cultivando relaciones transparentes y confiables con nuestros clientes, socios y comunidades. Valoramos la sostenibilidad, desde la preservación del suelo hasta la reducción de emisiones de carbono, y estamos comprometidos a promover prácticas agrícolas que respeten y protejan el medio ambiente.",
+        "contact.title": "Hable con nosotros", "contact.subtitle": "Manténgase actualizado con nuestras noticias e información.",
+        "contact.newsletter": "Sí, suscríbame a su boletín.", "contact.subscribe": "Suscribirse",
+        "contact.success": "¡Gracias! Su envío ha sido recibido.", "contact.error": "Algo salió mal. Inténtelo de nuevo.", "contact.sending": "Enviando...",
+        "gallery.title": "Golden Berrys", "gallery.subtitle": "Arándanos premium cultivados con cuidado en el corazón de Bahía",
+        "services.title": "Nuestros Servicios", "services.subtitle": "Soluciones innovadoras para la agricultura sostenible",
+        "services.1": "Implementación de Nuevas Tecnologías", "services.2": "Consultoría en Gobernanza Agrícola",
+        "services.3": "Responsabilidad Social y Ambiental", "services.4": "Prácticas Agrícolas Sostenibles",
+        "services.5": "Recuperación del Capital Natural", "services.6": "Alta Calidad de Vida",
+        "services.7": "Economía Circular y Colaborativa", "services.8": "Producción de Arándanos", "services.9": "Infraestructura Completa",
+        "map.title": "Nuestras Ubicaciones", "map.subtitle": "Fincas estratégicas en el corazón del Valle de São Francisco",
+      },
+      pt: {
+        "nav.farms": "Nossas Fazendas", "nav.project": "Nosso Projeto", "nav.partners": "Parceiros",
+        "nav.team": "Nossa Equipe", "nav.about": "Sobre", "nav.contact": "Contato",
+        "hero.tag": "Agricultura irrigada e créditos de carbono", "hero.title": "O Nosso Futuro é Azul", "hero.cta": "Saiba mais",
+        "farms.title": "Nossas Fazendas",
+        "farms.jatoba": "Fazenda Jatobá, localizada em Pilão Arcado - BA,",
+        "farms.jatoba.text": "é um exemplo de inovação e desenvolvimento sustentável no agronegócio. Com um modelo de produção baseado na eficiência e no respeito ao meio ambiente, a fazenda integra tecnologia e práticas ecológicas para garantir a máxima produtividade com o menor impacto ambiental. Além disso, a fazenda está estrategicamente localizada para facilitar o fluxo e a distribuição da produção, tornando-se um polo agrícola de referência.",
+        "farms.saofrancisco": "Fazenda São Francisco, localizada na região de Saldanha - BA,",
+        "farms.saofrancisco.text": "uma notável beleza natural no coração do Vale do São Francisco no Brasil. Reconhecida por seu solo fértil, abundantes recursos hídricos e clima favorável, Saldanha São Francisco se consolidou como um destino privilegiado para investimentos agrícolas.",
+        "farms.location": "região ao longo do Rio São Francisco",
+        "farms.location.text": "proporciona acesso a água abundante para irrigação, tornando-a um ambiente ideal para uma variedade de culturas. Além disso, tanto as fazendas",
+        "farms.location.text2": "possuem um rico patrimônio cultural e comunidades locais vibrantes, oferecendo aos investidores não apenas oportunidades agrícolas promissoras, mas também uma experiência cultural única. Com sua combinação de recursos naturais, clima favorável e riqueza cultural, as fazendas apresentam uma atraente oportunidade de investimento para quem busca participar do próspero setor agrícola do Brasil.",
+        "project.title": "Nosso Projeto", "project.subtitle": "Medindo nosso projeto em números",
+        "project.video.cta": "Confira a 1ª etapa da Fazenda Jatobá",
+        "project.stat1.label": "tCO2 em 20 anos", "project.stat1.desc": "Crédito de carbono é uma unidade de medida que representa a redução de emissões de gases de efeito estufa (GEE) por meio de projetos ou atividades que buscam reduzir a pegada de carbono.",
+        "project.stat2.label": "ha de área agrícola", "project.stat2.desc": "65 mil ha de área de preservação ambiental, recuperação e crédito de carbono do Bioma Caatinga",
+        "project.stat3.label": "lotes em áreas urbanas", "project.stat3.desc": "20 mil lotes de 350 metros em áreas urbanas",
+        "project.stat4.label": "Empregos", "project.stat4.desc": "+41.000 empregos diretos\n+87.000 empregos indiretos",
+        "invest.title": "O que buscamos ao investir", "invest.water": "Acessibilidade à água", "invest.soil": "Qualidade do solo", "invest.market": "Proximidade e acesso a mercados relevantes",
+        "partners.title": "Parceiros", "partners.cta": "Torne-se um Parceiro",
+        "team.title": "Nossa equipe", "team.cta": "Venha para o time",
+        "green.title.1": "A", "green.title.2": "Verde", "green.title.3": "Revolução na Agricultura",
+        "green.p1": "Bem-vindo ao Golden Agro Fund, líder em inovação sustentável para o agronegócio. Estamos na vanguarda da transformação da indústria, combinando tecnologia de ponta com práticas agrícolas ambientalmente conscientes.",
+        "green.p2": "O Golden Agro Fund é um grupo de investidores privados formado em 2021 com vasta e comprovada experiência no setor agrícola e imobiliário.",
+        "green.p3": "O Golden Agro Fund é uma empresa líder na gestão e desenvolvimento de projetos agrícolas, promovendo a modernização do agronegócio com sustentabilidade e alta produtividade. Nossa missão é conectar investidores e produtores a oportunidades que impulsionem o crescimento do setor. A Fazenda Jatobá é um dos nossos projetos mais promissores, localizada em uma região estratégica para o agronegócio. Com infraestrutura de última geração, a fazenda se destaca pelo uso eficiente dos recursos naturais e pelo compromisso com a produção sustentável.",
+        "green.smart.title": "Smartcity AgroIndustrial", "green.smart.text": "A Smartcity irá industrializar as cadeias de valor da Golden Agro em biotecnologia, biofertilizantes, biogás, energia renovável, entre outras áreas, dentro de uma Cidade Inteligente com habitações sustentáveis.",
+        "green.dores.title": "Dores do Mercado", "green.dores.text": "Incentivos Concentrados para Grandes Produtores. Tecnologias e Inovações Sustentáveis Inacessíveis. Manutenção Difícil e Sistemas Não Intuitivos.",
+        "green.publico.title": "Público Alvo", "green.publico.text": "Pequenos e Médios Produtores Rurais. Consumidores Finais Mais Conscientes.",
+        "climate.title": "Clima", "climate.text": "O município de Pilão Arcado, Bahia, está localizado na região semiárida do Brasil, e possui vegetação baixa, adaptada a períodos secos, além de possuir ampla biodiversidade. Como todas as regiões semiáridas do planeta, a precipitação é muito irregular no tempo e no espaço, sendo de novembro a abril a principal estação chuvosa na região semiárida do Nordeste do Brasil, especialmente no Vale do São Francisco.",
+        "soil.title": "Solo", "soil.text": "O solo possui características arenosas, o que é adequado para culturas precoces por ser fácil de trabalhar, mesmo em condições úmidas. Possui boa drenagem e textura de baixa densidade, tende a secar muito rapidamente e retém umidade por um curto período de tempo, por isso requer irrigação constante.",
+        "mission.title": "Missão", "mission.text": "Nossa missão é abrir caminho para a inovação sustentável no agronegócio, promovendo uma revolução verde que transcenda fronteiras. Estamos comprometidos em liderar a indústria na adoção de práticas agrícolas que respeitem e protejam nosso planeta, promovendo a sustentabilidade, fornecendo soluções tecnológicas inovadoras que impulsionem a produtividade e respeitem o meio ambiente.",
+        "vision.title": "Visão", "vision.text": "Nossa visão é ser reconhecidos como líderes no mercado de investimento em terras agrícolas, conhecidos pela excelência de nossos serviços, integridade de nossas práticas e compromisso com a sustentabilidade e responsabilidade social. Nos esforçamos para ser a escolha preferida de investidores conscientes que buscam retornos financeiros sólidos e um impacto positivo no mundo.",
+        "values.title": "Valores", "values.text": "Acreditamos na integridade, cultivando relacionamentos transparentes e confiáveis com nossos clientes, parceiros e comunidades. Valorizamos a sustentabilidade, desde a preservação do solo até a redução de emissões de carbono, e estamos comprometidos em promover práticas agrícolas que respeitem e protejam o meio ambiente.",
+        "contact.title": "Fale conosco", "contact.subtitle": "Fique por dentro das nossas novidades e informações.",
+        "contact.newsletter": "Sim, quero receber a newsletter.", "contact.subscribe": "Inscrever-se",
+        "contact.success": "Obrigado! Sua inscrição foi recebida.", "contact.error": "Algo deu errado. Tente novamente.", "contact.sending": "Enviando...",
+        "gallery.title": "Golden Berrys", "gallery.subtitle": "Blueberries premium cultivados com cuidado no coração da Bahia",
+        "services.title": "Nossos Serviços", "services.subtitle": "Soluções inovadoras para agricultura sustentável",
+        "services.1": "Implementação de Novas Tecnologias", "services.2": "Consultoria em Governança na Agricultura",
+        "services.3": "Responsabilidade Social e Ambiental", "services.4": "Práticas Agrícolas Sustentáveis",
+        "services.5": "Recuperação do Capital Natural", "services.6": "Alta Qualidade de Vida",
+        "services.7": "Economia Circular e Colaborativa", "services.8": "Produção de Mirtilo", "services.9": "Infraestrutura Completa",
+        "map.title": "Nossas Localizações", "map.subtitle": "Fazendas estratégicas no coração do Vale do São Francisco",
+      }
+    };
+
+    // ═══ LANGUAGE CONTEXT ═══
+    const LanguageContext = createContext(null);
+
+    function LanguageProvider({ children }) {
+      const [lang, setLang] = useState("en");
+      const t = (key) => translations[lang]?.[key] || translations.en[key] || key;
+      return React.createElement(LanguageContext.Provider, { value: { lang, setLang, t } }, children);
+    }
+
+    function useLanguage() {
+      return useContext(LanguageContext);
+    }
+
+    // ═══ ICONS (SVG) ═══
+    const MenuIcon = () => React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", width: 24, height: 24, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, React.createElement('line', { x1: 4, x2: 20, y1: 12, y2: 12 }), React.createElement('line', { x1: 4, x2: 20, y1: 6, y2: 6 }), React.createElement('line', { x1: 4, x2: 20, y1: 18, y2: 18 }));
+    const XIcon = () => React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", width: 24, height: 24, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, React.createElement('path', { d: "M18 6 6 18" }), React.createElement('path', { d: "m6 6 12 12" }));
+    const ChevronDownIcon = () => React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", width: 28, height: 28, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, React.createElement('path', { d: "m6 9 6 6 6-6" }));
+    const ChevronLeftIcon = () => React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", width: 20, height: 20, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, React.createElement('path', { d: "m15 18-6-6 6-6" }));
+    const ChevronRightIcon = () => React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", width: 20, height: 20, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, React.createElement('path', { d: "m9 18 6-6-6-6" }));
+    const GlobeIcon = () => React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, React.createElement('circle', { cx: 12, cy: 12, r: 10 }), React.createElement('path', { d: "M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" }), React.createElement('path', { d: "M2 12h20" }));
+    const PlayIcon = () => React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", width: 32, height: 32, viewBox: "0 0 24 24", fill: "white", stroke: "white", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, React.createElement('polygon', { points: "6 3 20 12 6 21 6 3" }));
+    const LinkedinIcon = () => React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", width: 18, height: 18, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, React.createElement('path', { d: "M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" }), React.createElement('rect', { width: 4, height: 12, x: 2, y: 9 }), React.createElement('circle', { cx: 4, cy: 4, r: 2 }));
+    const InstagramIcon = () => React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", width: 18, height: 18, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, React.createElement('rect', { width: 20, height: 20, x: 2, y: 2, rx: 5, ry: 5 }), React.createElement('path', { d: "M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" }), React.createElement('line', { x1: 17.5, x2: 17.51, y1: 6.5, y2: 6.5 }));
+    const FacebookIcon = () => React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", width: 18, height: 18, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, React.createElement('path', { d: "M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" }));
+    const DropletsIcon = () => React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", width: 40, height: 40, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, React.createElement('path', { d: "M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z" }), React.createElement('path', { d: "M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97" }));
+    const SproutIcon = () => React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", width: 40, height: 40, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, React.createElement('path', { d: "M7 20h10" }), React.createElement('path', { d: "M10 20c5.5-2.5.8-6.4 3-10" }), React.createElement('path', { d: "M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z" }), React.createElement('path', { d: "M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z" }));
+    const MapPinIcon = () => React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", width: 40, height: 40, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, React.createElement('path', { d: "M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" }), React.createElement('circle', { cx: 12, cy: 10, r: 3 }));
+    const CpuIcon = () => React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", width: 28, height: 28, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, React.createElement('rect', { width: 16, height: 16, x: 4, y: 4, rx: 2 }), React.createElement('rect', { width: 6, height: 6, x: 9, y: 9, rx: 1 }), React.createElement('path', { d: "M15 2v2" }), React.createElement('path', { d: "M15 20v2" }), React.createElement('path', { d: "M2 15h2" }), React.createElement('path', { d: "M2 9h2" }), React.createElement('path', { d: "M20 15h2" }), React.createElement('path', { d: "M20 9h2" }), React.createElement('path', { d: "M9 2v2" }), React.createElement('path', { d: "M9 20v2" }));
+    const ShieldIcon = () => React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", width: 28, height: 28, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, React.createElement('path', { d: "M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" }));
+    const LeafIcon = () => React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", width: 28, height: 28, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, React.createElement('path', { d: "M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" }), React.createElement('path', { d: "M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" }));
+    const RecycleIcon = () => React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", width: 28, height: 28, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, React.createElement('path', { d: "M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5" }), React.createElement('path', { d: "M11 19h8.203a1.83 1.83 0 0 0 1.556-.89 1.784 1.784 0 0 0 0-1.775l-1.226-2.12" }), React.createElement('path', { d: "m14 16-3 3 3 3" }), React.createElement('path', { d: "M8.293 13.596 7.196 9.5 3.1 10.598" }), React.createElement('path', { d: "m9.344 5.811 1.093-1.892A1.83 1.83 0 0 1 11.985 3a1.784 1.784 0 0 1 1.546.888l3.943 6.843" }), React.createElement('path', { d: "m13.378 9.633 4.096 1.098 1.097-4.096" }));
+    const HeartIcon = () => React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", width: 28, height: 28, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, React.createElement('path', { d: "M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" }));
+    const BuildingIcon = () => React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", width: 28, height: 28, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, React.createElement('rect', { width: 16, height: 20, x: 4, y: 2, rx: 2, ry: 2 }), React.createElement('path', { d: "M9 22v-4h6v4" }), React.createElement('path', { d: "M8 6h.01" }), React.createElement('path', { d: "M16 6h.01" }), React.createElement('path', { d: "M12 6h.01" }), React.createElement('path', { d: "M12 10h.01" }), React.createElement('path', { d: "M12 14h.01" }), React.createElement('path', { d: "M16 10h.01" }), React.createElement('path', { d: "M16 14h.01" }), React.createElement('path', { d: "M8 10h.01" }), React.createElement('path', { d: "M8 14h.01" }));
+    const CherryIcon = () => React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", width: 28, height: 28, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, React.createElement('path', { d: "M2 17a5 5 0 0 0 10 0c0-2.76-2.5-5-5-3-2.5-2-5 .24-5 3Z" }), React.createElement('path', { d: "M12 17a5 5 0 0 0 10 0c0-2.76-2.5-5-5-3-2.5-2-5 .24-5 3Z" }), React.createElement('path', { d: "M7 14c3.22-2.91 4.29-8.75 5-12 1.66 2.38 4.94 9 5 12" }), React.createElement('path', { d: "M22 9c-4.29 0-7.14-2.33-10-7 5.71 0 10 4.67 10 7Z" }));
+    const CheckCircleIcon = () => React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", width: 24, height: 24, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, React.createElement('circle', { cx: 12, cy: 12, r: 10 }), React.createElement('path', { d: "m9 12 2 2 4-4" }));
+    const Loader2Icon = () => React.createElement('svg', { xmlns: "http://www.w3.org/2000/svg", width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round", className: "animate-spin" }, React.createElement('path', { d: "M21 12a9 9 0 1 1-6.219-8.56" }));
+
+    const SERVICE_ICONS = [CpuIcon, ShieldIcon, LeafIcon, SproutIcon, RecycleIcon, HeartIcon, BuildingIcon, CherryIcon, BuildingIcon];
+
+    // ═══ HOOKS ═══
+    function useInView(options = {}) {
+      const ref = useRef(null);
+      const [isInView, setIsInView] = useState(false);
+      useEffect(() => {
+        const el = ref.current;
+        if (!el) return;
+        const observer = new IntersectionObserver(([entry]) => {
+          if (entry.isIntersecting) { setIsInView(true); observer.unobserve(el); }
+        }, { threshold: 0.1, ...options });
+        observer.observe(el);
+        return () => observer.disconnect();
+      }, []);
+      return { ref, isInView };
+    }
+
+    function useCountUp(end, duration = 2000, start = false) {
+      const [count, setCount] = useState(0);
+      useEffect(() => {
+        if (!start) return;
+        let startTime = null;
+        let frame;
+        const animate = (ts) => {
+          if (!startTime) startTime = ts;
+          const progress = Math.min((ts - startTime) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          setCount(Math.floor(eased * end));
+          if (progress < 1) frame = requestAnimationFrame(animate);
+        };
+        frame = requestAnimationFrame(animate);
+        return () => cancelAnimationFrame(frame);
+      }, [end, duration, start]);
+      return count;
+    }
+
+    // ═══ COMPONENTS ═══
+    function FadeIn({ children, className = "", delay = 0 }) {
+      const { ref, isInView } = useInView();
+      return React.createElement('div', {
+        ref,
+        className,
+        style: {
+          opacity: isInView ? 1 : 0,
+          transform: isInView ? "translateY(0)" : "translateY(30px)",
+          transition: `all 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s`
+        }
+      }, children);
+    }
+
+    function StatCounter({ stat, index }) {
+      const { ref, isInView } = useInView();
+      const count = useCountUp(stat.number, 2500, isInView);
+      const { t } = useLanguage();
+      const labels = [
+        { label: "project.stat1.label", desc: "project.stat1.desc" },
+        { label: "project.stat2.label", desc: "project.stat2.desc" },
+        { label: "project.stat3.label", desc: "project.stat3.desc" },
+        { label: "project.stat4.label", desc: "project.stat4.desc" },
+      ];
+      return React.createElement('div', { ref, className: "bg-white/90 backdrop-blur-sm rounded-lg p-6 shadow-lg border border-[#0D3B3B]/10" },
+        React.createElement('div', { className: "text-3xl md:text-4xl font-bold text-[#0D3B3B] font-heading mb-2" }, stat.format(count)),
+        React.createElement('div', { className: "w-12 h-0.5 bg-[#C4A35A] mb-3" }),
+        React.createElement('div', { className: "text-sm font-semibold text-[#0D3B3B]/80 uppercase tracking-wider mb-2 flex items-center gap-2" },
+          React.createElement('span', { className: "w-2 h-2 rounded-full bg-[#2DD4A8]" }),
+          t(labels[index]?.label || stat.label)
+        ),
+        React.createElement('p', { className: "text-sm text-[#0D3B3B]/60 leading-relaxed whitespace-pre-line" }, t(labels[index]?.desc || stat.description))
+      );
+    }
+
+    function LanguageSelector() {
+      const { lang, setLang } = useLanguage();
+      const [open, setOpen] = useState(false);
+      const flags = { en: "🇺🇸", es: "🇪🇸", pt: "🇧🇷" };
+      const labels = { en: "EN", es: "ES", pt: "PT" };
+      return React.createElement('div', { className: "relative" },
+        React.createElement('button', {
+          onClick: () => setOpen(!open),
+          className: "flex items-center gap-1.5 text-white/80 hover:text-[#C4A35A] transition-colors text-sm font-medium"
+        }, React.createElement(GlobeIcon), React.createElement('span', null, labels[lang])),
+        open && React.createElement('div', { className: "absolute right-0 top-full mt-2 bg-white rounded-lg shadow-xl overflow-hidden z-50 min-w-[100px]" },
+          ["en", "es", "pt"].map((l) => React.createElement('button', {
+            key: l,
+            onClick: () => { setLang(l); setOpen(false); },
+            className: `w-full px-4 py-2.5 text-left text-sm flex items-center gap-2 hover:bg-[#F5F0E8] transition-colors ${lang === l ? "bg-[#F5F0E8] font-semibold text-[#0D3B3B]" : "text-[#0D3B3B]/70"}`
+          }, React.createElement('span', null, flags[l]), React.createElement('span', null, labels[l])))
+        )
+      );
+    }
+
+    function ServicesCarousel() {
+      const { t } = useLanguage();
+      const [currentIndex, setCurrentIndex] = useState(0);
+      const [itemsPerView, setItemsPerView] = useState(3);
+      const services = Array.from({ length: 9 }, (_, i) => ({ title: t(`services.${i + 1}`), Icon: SERVICE_ICONS[i] }));
+
+      useEffect(() => {
+        const handleResize = () => {
+          if (window.innerWidth < 640) setItemsPerView(1);
+          else if (window.innerWidth < 1024) setItemsPerView(2);
+          else setItemsPerView(3);
+        };
+        handleResize();
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+      }, []);
+
+      const maxIndex = Math.max(0, services.length - itemsPerView);
+
+      return React.createElement('div', { className: "relative" },
+        React.createElement('div', { className: "overflow-hidden" },
+          React.createElement('div', {
+            className: "flex transition-transform duration-500 ease-out",
+            style: { transform: `translateX(-${currentIndex * (100 / itemsPerView)}%)` }
+          },
+            services.map((service, i) => {
+              const Icon = service.Icon;
+              return React.createElement('div', { key: i, className: "flex-shrink-0 px-3", style: { width: `${100 / itemsPerView}%` } },
+                React.createElement('div', { className: "bg-white rounded-xl p-8 shadow-md hover:shadow-xl transition-all duration-300 h-full border border-[#0D3B3B]/5 group hover:-translate-y-1" },
+                  React.createElement('div', { className: "w-16 h-16 rounded-full bg-[#0D3B3B]/5 flex items-center justify-center mb-6 group-hover:bg-[#C4A35A]/10 transition-colors" },
+                    React.createElement(Icon)
+                  ),
+                  React.createElement('h3', { className: "font-heading text-lg text-[#0D3B3B] font-semibold leading-tight" }, service.title)
+                )
+              );
+            })
+          )
+        ),
+        React.createElement('button', {
+          onClick: () => setCurrentIndex(i => Math.max(0, i - 1)),
+          disabled: currentIndex === 0,
+          className: "absolute -left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center text-[#0D3B3B] hover:bg-[#C4A35A] hover:text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed z-10"
+        }, React.createElement(ChevronLeftIcon)),
+        React.createElement('button', {
+          onClick: () => setCurrentIndex(i => Math.min(maxIndex, i + 1)),
+          disabled: currentIndex >= maxIndex,
+          className: "absolute -right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center text-[#0D3B3B] hover:bg-[#C4A35A] hover:text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed z-10"
+        }, React.createElement(ChevronRightIcon)),
+        React.createElement('div', { className: "flex justify-center gap-2 mt-8" },
+          Array.from({ length: maxIndex + 1 }, (_, i) => React.createElement('button', {
+            key: i,
+            onClick: () => setCurrentIndex(i),
+            className: `h-2.5 rounded-full transition-all ${i === currentIndex ? "bg-[#C4A35A] w-6" : "bg-[#0D3B3B]/20 w-2.5"}`
+          }))
+        )
+      );
+    }
+
+    function FarmMap() {
+      const { t } = useLanguage();
+      return React.createElement('section', { id: "map", className: "py-24 bg-white" },
+        React.createElement('div', { className: "container max-w-6xl mx-auto px-4" },
+          React.createElement(FadeIn, null,
+            React.createElement('h2', { className: "text-4xl md:text-5xl font-heading text-[#0D3B3B] mb-3" }, t("map.title")),
+            React.createElement('p', { className: "text-[#0D3B3B]/60 text-lg mb-12" }, t("map.subtitle"))
+          ),
+          React.createElement(FadeIn, { delay: 0.1 },
+            React.createElement('div', { className: "rounded-xl overflow-hidden shadow-2xl border border-[#0D3B3B]/10 h-[500px]" },
+              React.createElement('iframe', {
+                src: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d250000!2d-42.55!3d-10.05!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x76a85e8e4f3d1f7%3A0x1234567890!2sPil%C3%A3o%20Arcado%2C%20BA!5e0!3m2!1sen!2sbr!4v1234567890",
+                width: "100%",
+                height: "100%",
+                style: { border: 0 },
+                allowFullScreen: true,
+                loading: "lazy",
+                referrerPolicy: "no-referrer-when-downgrade"
+              })
+            )
+          ),
+          React.createElement(FadeIn, { delay: 0.2 },
+            React.createElement('div', { className: "grid md:grid-cols-2 gap-6 mt-8" },
+              React.createElement('div', { className: "flex items-start gap-4 bg-[#F5F0E8] rounded-lg p-6" },
+                React.createElement('div', { className: "text-[#C4A35A] flex-shrink-0 mt-1" }, React.createElement(MapPinIcon)),
+                React.createElement('div', null,
+                  React.createElement('h4', { className: "font-heading text-lg text-[#0D3B3B] font-semibold mb-1" }, "Fazenda Jatobá"),
+                  React.createElement('p', { className: "text-[#0D3B3B]/60 text-sm" }, "Pilão Arcado, Bahia, Brazil")
+                )
+              ),
+              React.createElement('div', { className: "flex items-start gap-4 bg-[#F5F0E8] rounded-lg p-6" },
+                React.createElement('div', { className: "text-[#C4A35A] flex-shrink-0 mt-1" }, React.createElement(MapPinIcon)),
+                React.createElement('div', null,
+                  React.createElement('h4', { className: "font-heading text-lg text-[#0D3B3B] font-semibold mb-1" }, "Fazenda São Francisco"),
+                  React.createElement('p', { className: "text-[#0D3B3B]/60 text-sm" }, "Saldanha, Pilão Arcado, Bahia, Brazil")
+                )
+              )
+            )
+          )
+        )
+      );
+    }
+
+    // ═══ MAIN HOME COMPONENT ═══
+    function Home() {
+      const [menuOpen, setMenuOpen] = useState(false);
+      const [scrolled, setScrolled] = useState(false);
+      const [email, setEmail] = useState("");
+      const [newsletter, setNewsletter] = useState(false);
+      const [videoOpen, setVideoOpen] = useState(false);
+      const [formStatus, setFormStatus] = useState("idle");
+      const { t } = useLanguage();
+
+      useEffect(() => {
+        const handleScroll = () => setScrolled(window.scrollY > 50);
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+      }, []);
+
+      const handleContactSubmit = () => {
+        if (!email || formStatus === "sending") return;
+        setFormStatus("sending");
+        setTimeout(() => {
+          setFormStatus("success");
+          setEmail("");
+          setNewsletter(false);
+        }, 1500);
+      };
+
+      const navLinks = [
+        { label: t("nav.farms"), href: "#farms" },
+        { label: t("nav.project"), href: "#project" },
+        { label: t("nav.partners"), href: "#partners" },
+        { label: t("nav.team"), href: "#team" },
+        { label: t("nav.about"), href: "#about" },
+        { label: t("nav.contact"), href: "#contact" },
+      ];
+
+      return React.createElement('div', { className: "min-h-screen" },
+        // ═══ NAVBAR ═══
+        React.createElement('nav', {
+          className: `fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? "bg-[#0D3B3B]/95 backdrop-blur-md shadow-lg py-3" : "bg-transparent py-5"}`
+        },
+          React.createElement('div', { className: "container max-w-6xl mx-auto px-4 flex items-center justify-between" },
+            React.createElement('a', { href: "#", className: "flex-shrink-0" },
+              React.createElement('img', { src: LOGO_URL, alt: "Golden Agro", className: "h-14 md:h-16" })
+            ),
+            React.createElement('div', { className: "hidden lg:flex items-center gap-8" },
+              navLinks.map(link => React.createElement('a', {
+                key: link.href,
+                href: link.href,
+                className: "text-white/80 hover:text-[#C4A35A] transition-colors text-sm font-medium tracking-wide uppercase"
+              }, link.label)),
+              React.createElement(LanguageSelector)
+            ),
+            React.createElement('div', { className: "lg:hidden flex items-center gap-3" },
+              React.createElement(LanguageSelector),
+              React.createElement('button', {
+                onClick: () => setMenuOpen(!menuOpen),
+                className: "text-white p-2"
+              }, menuOpen ? React.createElement(XIcon) : React.createElement(MenuIcon))
+            )
+          ),
+          menuOpen && React.createElement('div', { className: "lg:hidden bg-[#0D3B3B]/95 backdrop-blur-md overflow-hidden" },
+            React.createElement('div', { className: "container max-w-6xl mx-auto px-4 py-6 flex flex-col gap-4" },
+              navLinks.map(link => React.createElement('a', {
+                key: link.href,
+                href: link.href,
+                onClick: () => setMenuOpen(false),
+                className: "text-white/80 hover:text-[#C4A35A] transition-colors text-base font-medium tracking-wide uppercase py-2 border-b border-white/10"
+              }, link.label))
+            )
+          )
+        ),
+
+        // ═══ HERO SECTION ═══
+        React.createElement('section', { className: "relative h-screen flex items-end pb-20 overflow-hidden" },
+          React.createElement('div', {
+            className: "absolute inset-0 bg-cover bg-center hidden md:block",
+            style: { backgroundImage: `url(${HERO_BG})` }
+          }),
+          React.createElement('div', {
+            className: "absolute inset-0 bg-cover bg-center md:hidden",
+            style: { backgroundImage: `url(${HERO_BG_MOBILE})` }
+          }),
+          React.createElement('div', { className: "absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" }),
+          React.createElement('div', { className: "container max-w-6xl mx-auto px-4 relative z-10" },
+            React.createElement(FadeIn, null,
+              React.createElement('p', { className: "text-[#C4A35A] font-medium tracking-widest uppercase text-sm mb-4" }, t("hero.tag"))
+            ),
+            React.createElement(FadeIn, { delay: 0.15 },
+              React.createElement('h1', { className: "text-4xl md:text-6xl lg:text-7xl font-heading text-white leading-tight max-w-4xl mb-8" }, t("hero.title"))
+            ),
+            React.createElement(FadeIn, { delay: 0.3 },
+              React.createElement('a', {
+                href: "#farms",
+                className: "inline-flex items-center gap-2 bg-[#C4A35A] hover:bg-[#B8963E] text-white px-8 py-3.5 rounded-sm font-semibold tracking-wide transition-colors text-sm uppercase font-button"
+              }, t("hero.cta"))
+            )
+          ),
+          React.createElement('div', { className: "absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce" },
+            React.createElement(ChevronDownIcon)
+          )
+        ),
+
+        // ═══ OUR FARMS ═══
+        React.createElement('section', { id: "farms", className: "py-24 bg-[#F5F0E8]" },
+          React.createElement('div', { className: "container max-w-6xl mx-auto px-4" },
+            React.createElement(FadeIn, null,
+              React.createElement('h2', { className: "text-4xl md:text-5xl font-heading text-[#0D3B3B] mb-12" }, t("farms.title"))
+            ),
+            React.createElement('div', { className: "grid lg:grid-cols-2 gap-12 mb-12" },
+              React.createElement(FadeIn, null,
+                React.createElement('div', { className: "space-y-4" },
+                  React.createElement('div', { className: "rounded-lg overflow-hidden shadow-xl" },
+                    React.createElement('img', { src: FARM_IMG, alt: "Fazenda Jatobá", className: "w-full h-64 object-cover" })
+                  ),
+                  React.createElement('p', { className: "text-[#0D3B3B]/80 leading-relaxed" },
+                    React.createElement('strong', { className: "text-[#0D3B3B]" }, t("farms.jatoba")), " ", t("farms.jatoba.text")
+                  )
+                )
+              ),
+              React.createElement(FadeIn, { delay: 0.2 },
+                React.createElement('div', { className: "space-y-4" },
+                  React.createElement('div', { className: "rounded-lg overflow-hidden shadow-xl" },
+                    React.createElement('img', { src: FARM_SF_IMG, alt: "Fazenda São Francisco", className: "w-full h-64 object-cover" })
+                  ),
+                  React.createElement('p', { className: "text-[#0D3B3B]/80 leading-relaxed" },
+                    React.createElement('strong', { className: "text-[#0D3B3B]" }, t("farms.saofrancisco")), " ", t("farms.saofrancisco.text")
+                  )
+                )
+              )
+            ),
+            React.createElement(FadeIn, { delay: 0.1 },
+              React.createElement('p', { className: "text-[#0D3B3B]/80 leading-relaxed max-w-4xl" },
+                "The farms' strategic location in the ", React.createElement('strong', { className: "text-[#0D3B3B]" }, t("farms.location")), " ", t("farms.location.text"), " ", React.createElement('strong', { className: "text-[#0D3B3B]" }, "São Francisco and Jatobá"), " ", t("farms.location.text2")
+              )
+            )
+          )
+        ),
+
+        // ═══ OUR SERVICES ═══
+        React.createElement('section', { className: "py-24 bg-white" },
+          React.createElement('div', { className: "container max-w-6xl mx-auto px-4" },
+            React.createElement(FadeIn, null,
+              React.createElement('h2', { className: "text-4xl md:text-5xl font-heading text-[#0D3B3B] mb-3" }, t("services.title")),
+              React.createElement('p', { className: "text-[#0D3B3B]/60 text-lg mb-12" }, t("services.subtitle"))
+            ),
+            React.createElement(FadeIn, { delay: 0.1 },
+              React.createElement(ServicesCarousel)
+            )
+          )
+        ),
+
+        // ═══ OUR PROJECT ═══
+        React.createElement('section', { id: "project", className: "py-24 bg-[#F5F0E8] relative overflow-hidden" },
+          React.createElement('div', { className: "container max-w-6xl mx-auto px-4 relative z-10" },
+            React.createElement(FadeIn, null,
+              React.createElement('h2', { className: "text-4xl md:text-5xl font-heading text-[#0D3B3B] mb-3" }, t("project.title")),
+              React.createElement('p', { className: "text-[#0D3B3B]/60 text-lg mb-12" }, t("project.subtitle"))
+            ),
+            React.createElement(FadeIn, { delay: 0.1 },
+              React.createElement('div', { className: "mb-16" },
+                React.createElement('div', {
+                  className: "relative rounded-lg overflow-hidden shadow-2xl cursor-pointer group aspect-video max-w-3xl mx-auto",
+                  onClick: () => setVideoOpen(true)
+                },
+                  React.createElement('img', { src: TEAM_FIELD_IMG, alt: "Equipa no campo", className: "w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" }),
+                  React.createElement('div', { className: "absolute inset-0 bg-[#0D3B3B]/40 group-hover:bg-[#0D3B3B]/50 transition-colors" }),
+                  React.createElement('div', { className: "absolute inset-0 flex flex-col items-center justify-center gap-4" },
+                    React.createElement('div', { className: "w-20 h-20 rounded-full bg-[#C4A35A] flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform" },
+                      React.createElement(PlayIcon)
+                    ),
+                    React.createElement('p', { className: "text-white font-semibold text-lg tracking-wide" }, t("project.video.cta"))
+                  )
+                )
+              )
+            ),
+            videoOpen && React.createElement('div', {
+              className: "fixed inset-0 z-[100] bg-black/80 flex items-center justify-center p-4",
+              onClick: () => setVideoOpen(false)
+            },
+              React.createElement('div', {
+                className: "relative w-full max-w-4xl aspect-video",
+                onClick: (e) => e.stopPropagation()
+              },
+                React.createElement('button', {
+                  onClick: () => setVideoOpen(false),
+                  className: "absolute -top-10 right-0 text-white hover:text-[#C4A35A] transition-colors"
+                }, React.createElement(XIcon)),
+                React.createElement('video', { src: VIDEO_URL, controls: true, autoPlay: true, className: "w-full h-full rounded-lg" })
+              )
+            ),
+            React.createElement('div', { className: "grid md:grid-cols-2 lg:grid-cols-4 gap-6 relative" },
+              React.createElement('div', { className: "absolute -right-20 -top-20 w-96 h-96 opacity-10 pointer-events-none hidden lg:block" },
+                React.createElement('img', { src: EARTH_IMG, alt: "", className: "w-full h-full object-contain rounded-full" })
+              ),
+              PROJECT_STATS.map((stat, i) => React.createElement(FadeIn, { key: i, delay: i * 0.1 },
+                React.createElement(StatCounter, { stat, index: i })
+              ))
+            )
+          )
+        ),
+
+        // ═══ WHAT WE LOOK FOR ═══
+        React.createElement('section', { className: "py-24 bg-white" },
+          React.createElement('div', { className: "container max-w-6xl mx-auto px-4" },
+            React.createElement(FadeIn, null,
+              React.createElement('h2', { className: "text-4xl md:text-5xl font-heading text-[#0D3B3B] text-center mb-16" }, t("invest.title"))
+            ),
+            React.createElement('div', { className: "grid md:grid-cols-3 gap-8" },
+              [
+                { icon: React.createElement(DropletsIcon), title: t("invest.water"), img: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=600&h=400&fit=crop" },
+                { icon: React.createElement(SproutIcon), title: t("invest.soil"), img: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&h=400&fit=crop" },
+                { icon: React.createElement(MapPinIcon), title: t("invest.market"), img: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=600&h=400&fit=crop" },
+              ].map((item, i) => React.createElement(FadeIn, { key: i, delay: i * 0.15 },
+                React.createElement('div', { className: "group overflow-hidden rounded-lg shadow-lg bg-white" },
+                  React.createElement('div', { className: "h-56 overflow-hidden" },
+                    React.createElement('img', { src: item.img, alt: item.title, className: "w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" })
+                  ),
+                  React.createElement('div', { className: "p-6 text-center" },
+                    React.createElement('div', { className: "text-[#0D3B3B] mb-3 flex justify-center" }, item.icon),
+                    React.createElement('h3', { className: "font-heading text-lg text-[#0D3B3B] font-semibold" }, item.title)
+                  )
+                )
+              ))
+            )
+          )
+        ),
+
+        // ═══ GOLDEN BERRYS GALLERY ═══
+        React.createElement('section', { className: "py-24 bg-[#0D3B3B]" },
+          React.createElement('div', { className: "container max-w-6xl mx-auto px-4" },
+            React.createElement(FadeIn, null,
+              React.createElement('h2', { className: "text-4xl md:text-5xl font-heading text-white text-center mb-4" }, t("gallery.title")),
+              React.createElement('p', { className: "text-white/60 text-center text-lg mb-16 max-w-2xl mx-auto" }, t("gallery.subtitle"))
+            ),
+            React.createElement('div', { className: "grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6" },
+              BERRYS_IMAGES.map((img, i) => React.createElement(FadeIn, { key: i, delay: i * 0.1 },
+                React.createElement('div', { className: "group relative overflow-hidden rounded-xl aspect-square shadow-lg" },
+                  React.createElement('img', { src: img, alt: `Golden Berrys ${i + 1}`, className: "w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" }),
+                  React.createElement('div', { className: "absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" })
+                )
+              ))
+            )
+          )
+        ),
+
+        // ═══ PARTNERS ═══
+        React.createElement('section', { id: "partners", className: "py-24 bg-[#F5F0E8]" },
+          React.createElement('div', { className: "container max-w-6xl mx-auto px-4" },
+            React.createElement(FadeIn, null,
+              React.createElement('h2', { className: "text-4xl md:text-5xl font-heading text-[#0D3B3B] text-center mb-16" }, t("partners.title"))
+            ),
+            React.createElement('div', { className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 mb-12" },
+              PARTNER_LOGOS.map((logo, i) => React.createElement(FadeIn, { key: i, delay: i * 0.03 },
+                React.createElement('div', { className: "bg-[#0D3B3B] rounded-lg p-6 flex items-center justify-center h-24 hover:shadow-md transition-all" },
+                  React.createElement('img', { src: logo, alt: `Partner ${i + 1}`, className: "max-h-16 w-auto object-contain", style: { maxWidth: '90%' } })
+                )
+              ))
+            ),
+            React.createElement(FadeIn, null,
+              React.createElement('div', { className: "text-center" },
+                React.createElement('a', {
+                  href: "#contact",
+                  className: "inline-flex items-center gap-2 border-2 border-[#C4A35A] text-[#C4A35A] hover:bg-[#C4A35A] hover:text-white px-8 py-3 rounded-sm font-semibold tracking-wide transition-all text-sm uppercase font-button"
+                }, t("partners.cta"))
+              )
+            )
+          )
+        ),
+
+        // ═══ OUR TEAM ═══
+        React.createElement('section', { id: "team", className: "py-24 bg-[#E8EDE8]" },
+          React.createElement('div', { className: "container max-w-6xl mx-auto px-4" },
+            React.createElement(FadeIn, null,
+              React.createElement('h2', { className: "text-4xl md:text-5xl font-heading text-[#0D3B3B] mb-16" }, t("team.title"))
+            ),
+            React.createElement('div', { className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6" },
+              TEAM_MEMBERS.map((member, i) => React.createElement(FadeIn, { key: i, delay: i * 0.03 },
+                React.createElement('div', { className: "bg-white rounded-xl p-5 shadow-sm hover:shadow-lg transition-all duration-300 group hover:-translate-y-1 flex items-center justify-between gap-3" },
+                  React.createElement('span', { className: "text-[#0D3B3B] font-medium text-sm leading-tight" }, member),
+                  React.createElement('div', { className: "text-[#0D3B3B]/30 hover:text-[#0077B5] transition-colors flex-shrink-0 cursor-pointer" }, React.createElement(LinkedinIcon))
+                )
+              ))
+            ),
+            React.createElement(FadeIn, { delay: 0.2 },
+              React.createElement('div', { className: "mt-12 text-center" },
+                React.createElement('a', {
+                  href: "#contact",
+                  className: "inline-flex items-center gap-2 bg-[#0D3B3B] hover:bg-[#0A2F2F] text-white px-8 py-3 rounded-sm font-semibold tracking-wide transition-colors text-sm uppercase font-button"
+                }, t("team.cta"))
+              )
+            )
+          )
+        ),
+
+        // ═══ THE GREEN REVOLUTION ═══
+        React.createElement('section', { id: "about", className: "py-24 bg-[#0D3B3B]" },
+          React.createElement('div', { className: "container max-w-6xl mx-auto px-4" },
+            React.createElement('div', { className: "grid lg:grid-cols-2 gap-16 items-center mb-20" },
+              React.createElement(FadeIn, null,
+                React.createElement('div', null,
+                  React.createElement('h2', { className: "text-4xl md:text-5xl font-heading text-white mb-8" },
+                    t("green.title.1"), " ", React.createElement('span', { className: "text-[#2DD4A8]" }, t("green.title.2")), " ", t("green.title.3")
+                  ),
+                  React.createElement('div', { className: "space-y-5 text-white/80 leading-relaxed" },
+                    React.createElement('p', null, t("green.p1")),
+                    React.createElement('p', null, t("green.p2")),
+                    React.createElement('p', null, t("green.p3"))
+                  )
+                )
+              ),
+              React.createElement(FadeIn, { delay: 0.2 },
+                React.createElement('div', { className: "rounded-lg overflow-hidden shadow-2xl" },
+                  React.createElement('img', { src: GREEN_REV_IMG, alt: "Green Revolution", className: "w-full h-96 object-cover" })
+                )
+              )
+            ),
+            React.createElement('div', { className: "grid md:grid-cols-3 gap-8 mb-20" },
+              [
+                { title: t("green.smart.title"), text: t("green.smart.text") },
+                { title: t("green.dores.title"), text: t("green.dores.text") },
+                { title: t("green.publico.title"), text: t("green.publico.text") },
+              ].map((item, i) => React.createElement(FadeIn, { key: i, delay: i * 0.1 },
+                React.createElement('div', { className: "text-center" },
+                  React.createElement('h3', { className: "font-heading text-xl text-white font-semibold mb-4" }, item.title),
+                  React.createElement('p', { className: "text-white/70 text-sm leading-relaxed" }, item.text)
+                )
+              ))
+            )
+          )
+        ),
+
+        // ═══ FARM MAP ═══
+        React.createElement(FarmMap),
+
+        // ═══ CLIMATE & SOIL ═══
+        React.createElement('section', { className: "py-24 bg-[#F5F0E8]" },
+          React.createElement('div', { className: "container max-w-6xl mx-auto px-4" },
+            React.createElement(FadeIn, null,
+              React.createElement('div', { className: "rounded-lg overflow-hidden shadow-2xl mb-12" },
+                React.createElement('img', { src: SOIL_WORK_IMG, alt: "Trabalho no solo", className: "w-full h-72 md:h-96 object-cover" })
+              )
+            ),
+            React.createElement('div', { className: "grid lg:grid-cols-2 gap-16" },
+              React.createElement(FadeIn, null,
+                React.createElement('div', null,
+                  React.createElement('h2', { className: "text-4xl font-heading text-[#0D3B3B] mb-6" }, t("climate.title")),
+                  React.createElement('p', { className: "text-[#0D3B3B]/80 leading-relaxed" }, t("climate.text"))
+                )
+              ),
+              React.createElement(FadeIn, { delay: 0.15 },
+                React.createElement('div', null,
+                  React.createElement('h2', { className: "text-4xl font-heading text-[#0D3B3B] mb-6" }, t("soil.title")),
+                  React.createElement('p', { className: "text-[#0D3B3B]/80 leading-relaxed" }, t("soil.text"))
+                )
+              )
+            )
+          )
+        ),
+
+        // ═══ MISSION / VISION / VALUES ═══
+        React.createElement('section', { className: "relative" },
+          React.createElement('div', { className: "grid md:grid-cols-3" },
+            [
+              { title: t("mission.title"), text: t("mission.text"), img: MISSION_IMG },
+              { title: t("vision.title"), text: t("vision.text"), img: GREEN_REV_IMG },
+              { title: t("values.title"), text: t("values.text"), img: EARTH_IMG },
+            ].map((item, i) => React.createElement('div', { key: i, className: "relative group h-80 overflow-hidden" },
+              React.createElement('img', { src: item.img, alt: item.title, className: "absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" }),
+              React.createElement('div', { className: "absolute inset-0 bg-[#0D3B3B]/60 group-hover:bg-[#0D3B3B]/80 transition-colors duration-500" }),
+              React.createElement('div', { className: "relative z-10 h-full flex flex-col items-center justify-center p-8 text-center" },
+                React.createElement('h3', { className: "text-3xl font-heading text-[#C4A35A] mb-4" }, item.title),
+                React.createElement('p', { className: "text-white/80 text-sm leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500 max-w-xs" }, item.text)
+              )
+            ))
+          )
+        ),
+
+        // ═══ CONTACT ═══
+        React.createElement('section', { id: "contact", className: "py-24 bg-[#F5F0E8]" },
+          React.createElement('div', { className: "container max-w-2xl mx-auto px-4" },
+            React.createElement(FadeIn, null,
+              React.createElement('h2', { className: "text-4xl font-heading text-[#0D3B3B] mb-4" }, t("contact.title")),
+              React.createElement('p', { className: "text-[#0D3B3B]/70 mb-8" }, t("contact.subtitle"))
+            ),
+            React.createElement(FadeIn, { delay: 0.1 },
+              formStatus === "success" ?
+                React.createElement('div', { className: "flex items-center gap-3 bg-green-50 border border-green-200 rounded-lg p-6" },
+                  React.createElement('div', { className: "text-green-600 flex-shrink-0" }, React.createElement(CheckCircleIcon)),
+                  React.createElement('p', { className: "text-green-800 font-medium" }, t("contact.success"))
+                ) :
+                React.createElement('div', { className: "space-y-4" },
+                  React.createElement('input', {
+                    type: "email",
+                    value: email,
+                    onChange: (e) => setEmail(e.target.value),
+                    placeholder: "E-mail",
+                    className: "w-full px-4 py-3 rounded-sm border border-[#0D3B3B]/20 bg-white text-[#0D3B3B] placeholder-[#0D3B3B]/40 focus:outline-none focus:border-[#0D3B3B]/50 transition-colors",
+                    disabled: formStatus === "sending"
+                  }),
+                  React.createElement('label', { className: "flex items-center gap-3 text-sm text-[#0D3B3B]/70" },
+                    React.createElement('input', {
+                      type: "checkbox",
+                      checked: newsletter,
+                      onChange: (e) => setNewsletter(e.target.checked),
+                      className: "accent-[#C4A35A]",
+                      disabled: formStatus === "sending"
+                    }),
+                    t("contact.newsletter")
+                  ),
+                  formStatus === "error" && React.createElement('p', { className: "text-red-600 text-sm" }, t("contact.error")),
+                  React.createElement('button', {
+                    onClick: handleContactSubmit,
+                    disabled: !email || formStatus === "sending",
+                    className: "bg-[#C4A35A] hover:bg-[#B8963E] text-white px-10 py-3 rounded-sm font-semibold tracking-wide transition-colors text-sm uppercase disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 font-button"
+                  },
+                    formStatus === "sending" ?
+                      React.createElement(React.Fragment, null, React.createElement(Loader2Icon), t("contact.sending")) :
+                      t("contact.subscribe")
+                  )
+                )
+            )
+          )
+        ),
+
+        // ═══ FOOTER ═══
+        React.createElement('footer', { className: "bg-[#F5F0E8] border-t border-[#0D3B3B]/10 py-12" },
+          React.createElement('div', { className: "container max-w-6xl mx-auto px-4" },
+            React.createElement('div', { className: "grid md:grid-cols-2 gap-8 mb-8" },
+              React.createElement('div', null,
+                React.createElement('p', { className: "text-[#0D3B3B]/60 text-xs font-semibold mb-3 uppercase tracking-wider" }, "NIRE 4330006311"),
+                React.createElement('div', { className: "space-y-1.5 text-[#0D3B3B]/60 text-sm" },
+                  ADDRESSES.map((addr, i) => React.createElement('p', { key: i }, addr))
+                ),
+                React.createElement('div', { className: "mt-4 space-y-1 text-[#0D3B3B]/60 text-sm" },
+                  FARMS.map((farm, i) => React.createElement('p', { key: i }, farm))
+                )
+              ),
+              React.createElement('div', { className: "flex flex-col items-start md:items-end justify-between" },
+                React.createElement('div', { className: "flex gap-4 mb-6" },
+                  React.createElement('a', { href: "#", className: "w-10 h-10 rounded-full bg-[#0D3B3B] flex items-center justify-center text-white hover:bg-[#0A2F2F] transition-colors" }, React.createElement(InstagramIcon)),
+                  React.createElement('a', { href: "#", className: "w-10 h-10 rounded-full bg-[#0D3B3B] flex items-center justify-center text-white hover:bg-[#0A2F2F] transition-colors" }, React.createElement(FacebookIcon)),
+                  React.createElement('a', { href: "#", className: "w-10 h-10 rounded-full bg-[#0D3B3B] flex items-center justify-center text-white hover:bg-[#0A2F2F] transition-colors" }, React.createElement(LinkedinIcon))
+                ),
+                React.createElement('div', { className: "space-y-1 text-[#0D3B3B]/50 text-xs text-right" },
+                  CNPJS.map((cnpj, i) => React.createElement('p', { key: i }, cnpj))
+                )
+              )
+            ),
+            React.createElement('div', { className: "flex flex-col md:flex-row items-center justify-between pt-6 border-t border-[#0D3B3B]/10" },
+              React.createElement('div', { className: "flex items-center gap-4 mb-4 md:mb-0" },
+                React.createElement('img', { src: LOGO_DARK_URL, alt: "Golden Agro", className: "h-12" })
+              ),
+              React.createElement('p', { className: "text-[#0D3B3B]/40 text-xs" }, "© 2025 by Foco2mais.")
+            )
+          )
+        )
+      );
+    }
+
+    // ═══ APP ═══
+    function App() {
+      return React.createElement(LanguageProvider, null,
+        React.createElement(Home)
+      );
+    }
+
+    // ═══ RENDER ═══
+    const root = createRoot(document.getElementById('app'));
+    root.render(React.createElement(App));
+  </script>
+</body>
+</html>
